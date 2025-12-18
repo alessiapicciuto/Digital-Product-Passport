@@ -1,13 +1,12 @@
-// File: hardhat.config.js
-require("@nomicfoundation/hardhat-ethers");
+// hardhat.config.cjs
+require("@nomicfoundation/hardhat-toolbox");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.28", 
   networks: {
-    ganache: {
-      url: "http://127.0.0.1:8545", // La tua porta Ganache verificata
-      chainId: 1337, 
+    localhost: {
+      url: "http://127.0.0.1:7545", 
     },
   },
 };

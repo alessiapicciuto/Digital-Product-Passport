@@ -9,7 +9,7 @@ function FactoryView() {
       
       <form>
         <label>Indirizzo Stabilimento:</label>
-        <input type="text" placeholder="Via Roma, 1 - 20100 Milano" />
+        <input type="text" />
         
         <label>Consumo Energetico Stimato:</label>
         <input type="number" placeholder="kWh" />

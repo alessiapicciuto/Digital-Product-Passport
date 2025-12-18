@@ -1,7 +1,6 @@
 // File: src/components/consumerLogic.jsx
 
 import { useState } from 'react';
-//IMPORTIAMO LA FUNZIONE GET
 import { getContract } from '../utils/web3-instance'; 
 
 const useConsumer = () => {
@@ -44,8 +43,8 @@ const useConsumer = () => {
             
         } catch (err) {
 
-            console.error("Errore durante la ricerca del passaporto:", err);
-            setError('Errore durante la ricerca');        }
+            console.error("Errore durante la ricerca del passaporto:", err);       
+        }
         setLoading(false);
     };
 

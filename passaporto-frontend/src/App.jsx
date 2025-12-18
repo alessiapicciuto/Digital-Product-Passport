@@ -17,8 +17,6 @@ function App() {
     const [isReady, setIsReady] = useState(false);
     const [hasError, setHasError] = useState(false);
 
-
-    // GESTIONE DELLA CONNESSIONE ASINCRONA
     useEffect(() => {
         const checkInit = async () => {
             const success = await initWeb3();
@@ -33,12 +31,12 @@ function App() {
     }, []); 
 
 
-    // RENDERING IN CASO DI ERRORE CRITICO (Connessione Fallita)
+    // errore critico
     if (hasError) {
         return (
             <div className="container" style={{ color: 'red', textAlign: 'center', padding: '50px' }}>
-                <h1>❌ ERRORE DI CONNESSIONE CRITICO</h1>
-                <p>Non è stato possibile connettersi alla blockchain. Controlla che Hardhat sia attivo (porta 8545).</p>
+                <h1>errore di connessione </h1>
+                <p>Non è stato possibile connettersi alla blockchain.</p>
             </div>
         );
     }
@@ -49,22 +47,15 @@ function App() {
                 <h1>Passaporto Digitale del Made In Italy sostenibile</h1>
             </header>
             
-            {/* RENDERING DELL'INTERFACCIA SOLO SE isReady è TRUE */}
             {isReady ? (
                 <>
-                    {/* Menu di navigazione */}
+
                     <nav className="navigation">
                         <button
                             className={currentView === 'producer' ? 'active' : ''}
                             onClick={() => setCurrentView('producer')}
                         >
                             Produttore: Registra Prodotto
-                        </button>
-                        <button
-                            className={currentView === 'consumer' ? 'active' : ''}
-                            onClick={() => setCurrentView('consumer')}
-                        >
-                            Consumatore: Traccia Prodotto
                         </button>
                         <button
                             className={currentView === 'brand' ? 'active' : ''}
@@ -84,9 +75,14 @@ function App() {
                         >
                             Fabbrica: Gestione Produzione
                         </button>
+                        <button
+                            className={currentView === 'consumer' ? 'active' : ''}
+                            onClick={() => setCurrentView('consumer')}
+                        >
+                            Consumatore: Traccia Prodotto
+                        </button>
                     </nav>
             
-                    {/* Rendering condizionale dei pannelli */}
                     <main className="content">
                         {currentView === 'producer' && <ProducerPanel />}
                         {currentView === 'consumer' && <ConsumerView />}
@@ -98,8 +94,7 @@ function App() {
             ) : (
                 // MOSTRA L'ATTESA SE isReady è FALSE
                 <div style={{ padding: '50px', border: '1px solid #ccc', textAlign: 'center', marginTop: '50px' }}>
-                    <h2>Connessione alla Blockchain in corso...</h2>
-                    <p>Attendere il caricamento delle librerie Web3.</p>
+                    <h2>Connessione alla Blockchain</h2>
                 </div>
             )}
             

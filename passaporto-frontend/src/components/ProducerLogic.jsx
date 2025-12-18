@@ -1,7 +1,6 @@
 // File: src/components/ProducerLogic.jsx
 
 import { useState } from 'react';
-// 🟢 IMPORTAZIONE CORRETTA: Usiamo le funzioni GET
 import { getContract, getAccounts } from '../utils/web3-instance'; 
 
 const useProducer = () => {
@@ -17,7 +16,7 @@ const useProducer = () => {
         setTxHash(null);
         setLoading(true);
         
-        // OTTENIAMO LE VARIABILI TRAMITE LE FUNZIONI GET
+
         const contract = getContract();
         const accounts = getAccounts(); 
 
@@ -30,9 +29,10 @@ const useProducer = () => {
         try {
 
             const result = await contract.methods.registerOrigin(
-                productId, 
-                originDetails
-            ).send({ from: accounts[0] });
+             productId, 
+             originDetails
+             ).send({ from: accounts[0],
+             gas: 500000 });
 
             setTxHash(result.transactionHash);
             setError(null); 

@@ -11,7 +11,7 @@ function ProducerPanel() {
         setOriginDetails, 
         loading,
         error,
-        txHash, // Questo conterrà l'hash dopo la registrazione
+        txHash,
         handleRegistration 
     } = useProducer();
 
@@ -49,14 +49,14 @@ function ProducerPanel() {
             {/* Visualizzazione errori */}
             {error && <p style={{ color: 'red' }}>Errore: {error}</p>}
 
-            {/* 🟢 SICUREZZA: Mostra l'hash solo se esiste (risolve il crash) */}
+            {/* Mostra l'hash */}
             {txHash && (
                 <div style={{ marginTop: '10px' }}>
-                    <p style={{ color: 'green', fontWeight: 'bold' }}>✅ Registrazione Riuscita!</p>
+                    <p style={{ color: 'green', fontWeight: 'bold' }}> Registrazione Riuscita</p>
                     <p style={{ fontSize: '0.8em' }}>
                         Hash Transazione: 
                         <span style={{ color: '#007bff', marginLeft: '5px' }}>
-                            {/* Verifichiamo che txHash sia una stringa prima di usare substring */}
+            
                             {typeof txHash === 'string' ? txHash.substring(0, 20) + '...' : 'Dettagli disponibili'}
                         </span>
                     </p>

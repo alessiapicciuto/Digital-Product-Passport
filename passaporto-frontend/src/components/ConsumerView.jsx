@@ -10,6 +10,7 @@ function ConsumerView() {
     } = useConsumerLogic(); 
 
     const formatTimestamp = (timestamp) => {
+        // Se il timestamp è 0 (uint256 default in Solidity), il prodotto non esiste
         if (timestamp === '0' || !timestamp) return 'N/A';
         return new Date(parseInt(timestamp) * 1000).toLocaleString();
     };
@@ -18,8 +19,7 @@ function ConsumerView() {
         <section className="panel consumer-view">
             <h2>Traccia il Prodotto</h2>
             <p> Inserisci l'ID del prodotto </p>
-
-            {/* Collega l'Input allo stato productID */}
+            
             <input 
                 type="text" 
                 placeholder="ID prodotto" 
@@ -27,7 +27,6 @@ function ConsumerView() {
                 onChange={(e) => setProductID(e.target.value)}
             />
             
-            {/* Collega il Pulsante alla funzione di ricerca */}
             <button onClick={handleSearch} disabled={loading}>
                 {loading ? 'Ricerca in corso...' : 'Cerca'}
             </button>
@@ -38,46 +37,46 @@ function ConsumerView() {
                 {/* Visualizzazione errori */}
                 {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 
-                {/* Visualizzazione dei risultati se passportDetails è popolato */}
-                {passportDetails ? (
-                    <div>
+                {/* Visualizzazione dei risultati */}
+                {passportDetails && passportDetails.timestamp !== '0' ? (
+                    <div className="passport-data">
                         <h4>Storico Prodotto ID: {productID}</h4>
                         <hr />
                         
                         <p><strong>Data Registrazione:</strong> {formatTimestamp(passportDetails.timestamp)}</p>
-                        
-                        <p><strong> Produttore:</strong> {passportDetails.producer}</p>
-                        <p>Hash Dati Iniziali: {passportDetails.originHash}</p>
+                        <p><strong>Produttore:</strong> {passportDetails.producer}</p>
+                        <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Origine: {passportDetails.originHash}</p>
                         
                         <hr />
                         
-                        {/* Fabbrica: appare solo se l'indirizzo è diverso da zero */}
+                        {/* Fabbrica */}
                         {passportDetails.factory !== '0x0000000000000000000000000000000000000000' && (
                             <>
-                                <p><strong>🏭 Fabbrica:</strong> {passportDetails.factory}</p>
-                                <p>Hash Dati Produzione: {passportDetails.factoryHash}</p>
+                                <p><strong>Fabbrica:</strong> {passportDetails.factory}</p>
+                                <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Produzione: {passportDetails.factoryHash}</p>
                                 <hr />
                             </>
                         )}
 
-                        <p><strong> Brand:</strong> {passportDetails.brand}</p>
-                        <p>Hash Dati Brand: {passportDetails.brandHash}</p>
+                        {/* Brand */}
+                        <p><strong>Brand:</strong> {passportDetails.brand}</p>
+                        <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Brand: {passportDetails.brandHash}</p>
+                        <hr />
 
-                        {/* Certificatore: appare solo se l'indirizzo è diverso da zero */}
+                        {/* Certificatore */}
                         {passportDetails.certifier !== '0x0000000000000000000000000000000000000000' && (
                             <>
-                                <p><strong> Certificatore:</strong> {passportDetails.certifier}</p>
-                                <p>Hash Certificazione: {passportDetails.certifierHash}</p>
+                                <p><strong>Certificatore:</strong> {passportDetails.certifier}</p>
+                                <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Certificazione: {passportDetails.certifierHash}</p>
                             </>
                         )}
-                        
                     </div>
                 ) : (
-                    // Messaggio iniziale o di assenza di risultati
-                    <p>Dettagli non ancora caricati. Inserisci l'ID e cerca.</p>
+                    /* Messaggio se non è stato ancora cercato nulla o se l'ID è vuoto */
+                    !loading && !error && <p>Inserisci un ID valido per visualizzare il passaporto digitale.</p>
                 )}
-            </div>
-        </section>
+            </div> 
+        </section> 
     );
 }
 
