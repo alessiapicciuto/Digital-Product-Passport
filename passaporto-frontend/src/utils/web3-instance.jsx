@@ -3,7 +3,7 @@
 import Web3 from 'web3';
 import ProductPassportArtifact from '../contracts/ProductPassport.json';
 
-const CONTRACT_ADDRESS = '0xEC54B61F59606405058Bbcf6E3A8852D1c753451';
+const CONTRACT_ADDRESS = '0x06b8c301511FFA00e32C86E8CfB7c4d5db1B702e';
 
 const NETWORK_URL = 'http://127.0.0.1:7545'; 
 
