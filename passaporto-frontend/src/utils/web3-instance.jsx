@@ -5,7 +5,7 @@ import ProductPassportArtifact from '../contracts/ProductPassport.json';
 
 // Assicurati che questo indirizzo sia quello ottenuto dal tuo deploy (di solito 0x5FbDB23...)
 const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'; 
-const NETWORK_URL = 'http://127.0.0.1:8545'; // Deve essere 8545 (Nodo Hardhat)
+const NETWORK_URL = 'HTTP://127.0.0.1:7545'; // Deve essere 8545 (Nodo Hardhat)
 
 // Variabili che verranno assegnate internamente
 let web3Instance = null;

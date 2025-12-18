@@ -49,7 +49,7 @@ function ProducerPanel() {
             {error && <p style={{ color: 'red' }}>Errore: {error}</p>}
             {txHash && (
                 <p style={{ color: 'green' }}>
-                    <a href={`http://localhost:8545/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`HTTP://127.0.0.1:7545`} target="_blank" rel="noopener noreferrer">
                         {txHash.substring(0, 15)}...
                     </a>
                 </p>
