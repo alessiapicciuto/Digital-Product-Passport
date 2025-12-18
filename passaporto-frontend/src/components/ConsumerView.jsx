@@ -10,7 +10,7 @@ function ConsumerView() {
     } = useConsumerLogic(); 
 
     const formatTimestamp = (timestamp) => {
-        // Se il timestamp è 0 (uint256 default in Solidity), il prodotto non esiste
+        
         if (timestamp === '0' || !timestamp) return 'N/A';
         return new Date(parseInt(timestamp) * 1000).toLocaleString();
     };

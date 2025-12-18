@@ -13,7 +13,7 @@ import FactoryView from './components/FactoryView';
 
 function App() {
     const [currentView, setCurrentView] = useState('producer');
-    // Stati per la connessione Blockchain
+    
     const [isReady, setIsReady] = useState(false);
     const [hasError, setHasError] = useState(false);
 
@@ -31,7 +31,7 @@ function App() {
     }, []); 
 
 
-    // errore critico
+    
     if (hasError) {
         return (
             <div className="container" style={{ color: 'red', textAlign: 'center', padding: '50px' }}>
@@ -92,7 +92,7 @@ function App() {
                     </main>
                 </>
             ) : (
-                // MOSTRA L'ATTESA SE isReady è FALSE
+                
                 <div style={{ padding: '50px', border: '1px solid #ccc', textAlign: 'center', marginTop: '50px' }}>
                     <h2>Connessione alla Blockchain</h2>
                 </div>

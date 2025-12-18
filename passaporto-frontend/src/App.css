@@ -1,6 +1,6 @@
 /* src/App.css - Stili base per il layout */
 
-/* Reset base */
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -61,11 +61,11 @@ body {
 }
 
 .producer-panel {
-  background-color: #e6f7ff; /* Azzurro chiaro per il produttore */
+  background-color: #e6f7ff; 
 }
 
 .consumer-view {
-  background-color: #f0fff4; /* Verde chiaro per il consumatore */
+  background-color: #f0fff4; 
 }
 
 /* Stili Form */
@@ -81,7 +81,7 @@ form input, form textarea, .consumer-view input {
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* Importante per width: 100% */
+  box-sizing: border-box;
 }
 
 form button[type="submit"], .consumer-view button {
