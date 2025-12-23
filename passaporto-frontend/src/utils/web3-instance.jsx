@@ -3,8 +3,10 @@
 import Web3 from 'web3';
 import ProductPassportArtifact from '../contracts/ProductPassport.json';
 
-const CONTRACT_ADDRESS = '0x06b8c301511FFA00e32C86E8CfB7c4d5db1B702e';
+// Indirizzo del contratto da aggiornare e verificare che sia lo stesso dopo aver fatto npx hardhat run scripts/deploy.cjs --network localhost ogni volta che si riavvia ganache 
+const CONTRACT_ADDRESS = '0x16A2d0870c1E902D7Cc243269B56Bb3a3094308f';
 
+// URL della rete locale Ganache configurata su MetaMask
 const NETWORK_URL = 'http://127.0.0.1:7545'; 
 
 let web3Instance = null;
@@ -15,14 +17,15 @@ const initWeb3 = async () => {
     try {
         let provider;
         
+        // Verifica se MetaMask (window.ethereum) è installato nel browser
         if (window.ethereum) {
-        
             provider = window.ethereum;
-        
+            
+            // Richiede all'utente di connettere l'account MetaMask al sito
             await window.ethereum.request({ method: 'eth_requestAccounts' });
         } else {
-        
-            console.log('Nessun provider rilevato.');
+            // Se MetaMask non c'è, usa il provider locale (fallback)
+            console.log('MetaMask non rilevato. Uso il provider locale Ganache.');
             provider = new Web3.providers.HttpProvider(NETWORK_URL);
         }
         
@@ -30,16 +33,19 @@ const initWeb3 = async () => {
         
         if (web3Instance) {
             const abi = ProductPassportArtifact.abi;
+            // Inizializza l'istanza del contratto con ABI e Indirizzo
             contractInstance = new web3Instance.eth.Contract(abi, CONTRACT_ADDRESS);
             
+            // Recupera la lista degli account (quello importato da Ganache)
             accountsList = await web3Instance.eth.getAccounts();
             
-            console.log(" Web3 e Contratto inizializzati con successo.");
-            console.log("Account rilevati:", accountsList);
+            console.log("Web3 e Contratto inizializzati con successo.");
+            console.log("Indirizzo contratto:", CONTRACT_ADDRESS);
+            console.log("Account attivo:", accountsList[0]);
             return true;
         }
     } catch (error) {
-        console.error("errore inizializzazione:", error);
+        console.error("Errore durante l'inizializzazione di Web3:", error);
         return false;
     }
 };
