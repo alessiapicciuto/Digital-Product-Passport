@@ -6,7 +6,7 @@ async function main() {
   
   const productPassport = await ProductPassport.deploy();
 
-  console.log("Contratto ProductPassport deployato all'indirizzo:", productPassport.target);
+  console.log("Contratto ProductPassport distribuito all'indirizzo:", productPassport.target);
 }
 
 main()
