@@ -1,5 +1,4 @@
 // File: src/components/consumerLogic.jsx
-
 import { useState } from 'react';
 import { getContract } from '../utils/web3-instance'; 
 
@@ -9,15 +8,13 @@ const useConsumer = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Gestione della ricerca
     const handleSearch = async (e) => {
-    e.preventDefault()
+        if (e) e.preventDefault();
 
         setError(null);
         setPassportDetails(null);
         setLoading(true);
 
-    
         const contract = getContract();
 
         if (!contract) {
@@ -27,30 +24,34 @@ const useConsumer = () => {
         }
 
         try {
-
+            // Chiamata alla funzione corretta del tuo contratto
             const result = await contract.methods.getPassport(searchId).call();
-            if (result.id === '' || result.origin === '') {
+            
+            // Verifichiamo se il timestamp è 0 (prodotto non esistente)
+            if (result.timestamp === "0") {
                 setError(`Passaporto non trovato per ID: ${searchId}`);
-                setPassportDetails(null);
             } else {
+                // Mappiamo i campi ESATTAMENTE come definiti nello Smart Contract
                 setPassportDetails({
-                    id: result.id,
-                    origin: result.origin,
-                    timestamp: new Date(Number(result.timestamp) * 1000).toLocaleString(),
-                    certified: result.certified
+                    producer: result.producer,
+                    factory: result.factory,
+                    certifier: result.certifier,
+                    originHash: result.originHash,
+                    factoryHash: result.factoryHash,
+                    certifierHash: result.certifierHash,
+                    timestamp: result.timestamp // Passiamo il timestamp grezzo, lo formatta la View
                 });
             }
-            
         } catch (err) {
-
-            console.error("Errore durante la ricerca del passaporto:", err);       
+            console.error("Errore durante la ricerca:", err);
+            setError("ID non trovato o errore di rete.");
         }
         setLoading(false);
     };
 
     return {
-        searchId,
-        setSearchId,
+        productID: searchId,    // Nome allineato alla View
+        setProductID: setSearchId, 
         passportDetails,
         loading,
         error,

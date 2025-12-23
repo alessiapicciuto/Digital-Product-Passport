@@ -1,5 +1,5 @@
 import React from 'react';
-import useConsumerLogic from './ConsumerLogic'; 
+import useConsumerLogic from './consumerLogic'; 
 
 function ConsumerView() {
     const { 
@@ -9,71 +9,61 @@ function ConsumerView() {
         handleSearch 
     } = useConsumerLogic(); 
 
-    const formatTimestamp = (timestamp) => {
-        
-        if (timestamp === '0' || !timestamp) return 'N/A';
-        return new Date(parseInt(timestamp) * 1000).toLocaleString();
+    const formatTimestamp = (ts) => {
+        if (!ts || ts === '0') return 'N/A';
+        return new Date(Number(ts) * 1000).toLocaleString();
     };
 
     return (
         <section className="panel consumer-view">
             <h2>Traccia il Prodotto</h2>
-            <p> Inserisci l'ID del prodotto </p>
+            <p>Inserisci l'ID del prodotto per consultare la blockchain</p>
             
-            <input 
-                type="text" 
-                placeholder="ID prodotto" 
-                value={productID}
-                onChange={(e) => setProductID(e.target.value)}
-            />
-            
-            <button onClick={handleSearch} disabled={loading}>
-                {loading ? 'Ricerca in corso...' : 'Cerca'}
-            </button>
+            <div className="search-bar">
+                <input 
+                    type="text" 
+                    placeholder="Esempio: prova001" 
+                    value={productID}
+                    onChange={(e) => setProductID(e.target.value)}
+                />
+                <button onClick={handleSearch} disabled={loading || !productID}>
+                    {loading ? 'Ricerca...' : 'Cerca'}
+                </button>
+            </div>
 
-            <div className="product-details">
-                <h3>Risultati:</h3>
-                
-                {/* Visualizzazione errori */}
-                {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+            <div className="product-results">
+                {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
 
-                {/* Visualizzazione dei risultati */}
-                {passportDetails && passportDetails.timestamp !== '0' ? (
-                    <div className="passport-data">
-                        <h4>Storico Prodotto ID: {productID}</h4>
-                        <hr />
-                        
+                {passportDetails && (
+                    <div className="passport-card" style={{ border: '1px solid #ccc', padding: '15px', marginTop: '20px' }}>
+                        <h4>Passaporto Digitale: {productID}</h4>
                         <p><strong>Data Registrazione:</strong> {formatTimestamp(passportDetails.timestamp)}</p>
-                        <p><strong>Produttore:</strong> {passportDetails.producer}</p>
-                        <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Origine: {passportDetails.originHash}</p>
                         
                         <hr />
-                        
-                        {/* Fabbrica */}
+                        <h5>1. Origine (Produttore)</h5>
+                        <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.producer}</span></p>
+                        <p>Dettagli: {passportDetails.originHash}</p>
+
+                        {/* Visualizza Fabbrica solo se registrata */}
                         {passportDetails.factory !== '0x0000000000000000000000000000000000000000' && (
                             <>
-                                <p><strong>Fabbrica:</strong> {passportDetails.factory}</p>
-                                <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Produzione: {passportDetails.factoryHash}</p>
                                 <hr />
+                                <h5>2. Produzione (Fabbrica)</h5>
+                                <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.factory}</span></p>
+                                <p>Dettagli: {passportDetails.factoryHash}</p>
                             </>
                         )}
 
-                        {/* Brand */}
-                        <p><strong>Brand:</strong> {passportDetails.brand}</p>
-                        <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Brand: {passportDetails.brandHash}</p>
-                        <hr />
-
-                        {/* Certificatore */}
+                        {/* Visualizza Certificatore solo se registrata */}
                         {passportDetails.certifier !== '0x0000000000000000000000000000000000000000' && (
                             <>
-                                <p><strong>Certificatore:</strong> {passportDetails.certifier}</p>
-                                <p style={{ fontSize: '0.8em', color: '#666' }}>Hash Certificazione: {passportDetails.certifierHash}</p>
+                                <hr />
+                                <h5>3. Certificazione</h5>
+                                <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.certifier}</span></p>
+                                <p>Dettagli: {passportDetails.certifierHash}</p>
                             </>
                         )}
                     </div>
-                ) : (
-                    /* Messaggio se non è stato ancora cercato nulla o se l'ID è vuoto */
-                    !loading && !error && <p>Inserisci un ID valido per visualizzare il passaporto digitale.</p>
                 )}
             </div> 
         </section> 
