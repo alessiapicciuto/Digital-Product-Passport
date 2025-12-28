@@ -17,14 +17,13 @@ const initWeb3 = async () => {
     try {
         let provider;
         
-        // Verifica se MetaMask (window.ethereum) è installato nel browser
+        // Verifica se MetaMask
         if (window.ethereum) {
             provider = window.ethereum;
             
             // Richiede all'utente di connettere l'account MetaMask al sito
             await window.ethereum.request({ method: 'eth_requestAccounts' });
         } else {
-            // Se MetaMask non c'è, usa il provider locale (fallback)
             console.log('MetaMask non rilevato. Uso il provider locale Ganache.');
             provider = new Web3.providers.HttpProvider(NETWORK_URL);
         }

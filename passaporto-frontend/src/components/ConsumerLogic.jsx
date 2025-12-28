@@ -1,4 +1,3 @@
-// File: src/components/consumerLogic.jsx
 import { useState } from 'react';
 import { getContract } from '../utils/web3-instance'; 
 
@@ -10,13 +9,11 @@ const useConsumer = () => {
 
     const handleSearch = async (e) => {
         if (e) e.preventDefault();
-
         setError(null);
         setPassportDetails(null);
         setLoading(true);
 
         const contract = getContract();
-
         if (!contract) {
             setError('Errore: Connessione al contratto non stabilita.');
             setLoading(false);
@@ -24,39 +21,29 @@ const useConsumer = () => {
         }
 
         try {
-            // Chiamata alla funzione corretta del tuo contratto
             const result = await contract.methods.getPassport(searchId).call();
             
-            // Verifichiamo se il timestamp è 0 (prodotto non esistente)
             if (result.timestamp === "0") {
                 setError(`Passaporto non trovato per ID: ${searchId}`);
             } else {
-                // Mappiamo i campi ESATTAMENTE come definiti nello Smart Contract
                 setPassportDetails({
-                    producer: result.producer,
+                    brand: result.producer,
                     factory: result.factory,
                     certifier: result.certifier,
-                    originHash: result.originHash,
-                    factoryHash: result.factoryHash,
-                    certifierHash: result.certifierHash,
-                    timestamp: result.timestamp // Passiamo il timestamp grezzo, lo formatta la View
+                    brandDetails: result.originHash,
+                    factoryDetails: result.factoryHash,
+                    certifierNote: result.certifierHash,
+                    timestamp: result.timestamp 
                 });
             }
         } catch (err) {
-            console.error("Errore durante la ricerca:", err);
-            setError("ID non trovato o errore di rete.");
+            console.error("Errore ricerca:", err);
+            setError("Prodotto non trovato o ID errato.");
         }
         setLoading(false);
     };
 
-    return {
-        productID: searchId,    // Nome allineato alla View
-        setProductID: setSearchId, 
-        passportDetails,
-        loading,
-        error,
-        handleSearch,
-    };
+    return { productID: searchId, setProductID: setSearchId, passportDetails, loading, error, handleSearch };
 };
 
 export default useConsumer;

@@ -17,7 +17,7 @@ function ProducerPanel() {
 
     return (
         <section className="panel producer-panel">
-            <h2>Registra un Nuovo Capo</h2>
+            <h2>Registra una nuova materia prima</h2>
             <form onSubmit={handleRegistration}>
                 <label htmlFor="productId">ID Prodotto:</label>
                 <input

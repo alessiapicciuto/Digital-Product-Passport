@@ -2,71 +2,43 @@ import React from 'react';
 import useConsumerLogic from './consumerLogic'; 
 
 function ConsumerView() {
-    const { 
-        productID, setProductID, 
-        passportDetails, 
-        loading, error, 
-        handleSearch 
-    } = useConsumerLogic(); 
+    const { productID, setProductID, passportDetails, loading, error, handleSearch } = useConsumerLogic(); 
 
-    const formatTimestamp = (ts) => {
-        if (!ts || ts === '0') return 'N/A';
-        return new Date(Number(ts) * 1000).toLocaleString();
-    };
+    const formatDate = (ts) => new Date(Number(ts) * 1000).toLocaleString();
 
     return (
         <section className="panel consumer-view">
-            <h2>Traccia il Prodotto</h2>
-            <p>Inserisci l'ID del prodotto per consultare la blockchain</p>
-            
+            <h2>Tracciabilità Blockchain</h2>
             <div className="search-bar">
                 <input 
                     type="text" 
-                    placeholder="Esempio: prova001" 
+                    placeholder="ID Prodotto commerciale" 
                     value={productID}
                     onChange={(e) => setProductID(e.target.value)}
                 />
-                <button onClick={handleSearch} disabled={loading || !productID}>
-                    {loading ? 'Ricerca...' : 'Cerca'}
-                </button>
+                <button onClick={handleSearch} disabled={loading}>Cerca</button>
             </div>
 
-            <div className="product-results">
-                {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                {passportDetails && (
-                    <div className="passport-card" style={{ border: '1px solid #ccc', padding: '15px', marginTop: '20px' }}>
-                        <h4>Passaporto Digitale: {productID}</h4>
-                        <p><strong>Data Registrazione:</strong> {formatTimestamp(passportDetails.timestamp)}</p>
-                        
-                        <hr />
-                        <h5>1. Origine (Produttore)</h5>
-                        <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.producer}</span></p>
-                        <p>Dettagli: {passportDetails.originHash}</p>
-
-                        {/* Visualizza Fabbrica solo se registrata */}
-                        {passportDetails.factory !== '0x0000000000000000000000000000000000000000' && (
-                            <>
-                                <hr />
-                                <h5>2. Produzione (Fabbrica)</h5>
-                                <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.factory}</span></p>
-                                <p>Dettagli: {passportDetails.factoryHash}</p>
-                            </>
-                        )}
-
-                        {/* Visualizza Certificatore solo se registrata */}
-                        {passportDetails.certifier !== '0x0000000000000000000000000000000000000000' && (
-                            <>
-                                <hr />
-                                <h5>3. Certificazione</h5>
-                                <p>Wallet: <span style={{fontSize: '0.8em'}}>{passportDetails.certifier}</span></p>
-                                <p>Dettagli: {passportDetails.certifierHash}</p>
-                            </>
-                        )}
+            {passportDetails && (
+                <div className="passport-card" style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
+                    <h3>📦 Passaporto Digitale: {productID}</h3>
+                    <p><strong>Data Creazione:</strong> {formatDate(passportDetails.timestamp)}</p>
+                    <hr />
+                    <h4>🏢 Info Brand</h4>
+                    <p>{passportDetails.brandDetails}</p>
+                    <hr />
+                    <h4>🏭 Info Fabbrica</h4>
+                    <p>{passportDetails.factoryDetails || "Dati non ancora inseriti"}</p>
+                    <hr />
+                    <div style={{ backgroundColor: passportDetails.certifierNote ? '#d4edda' : '#fff3cd', padding: '10px' }}>
+                        <h4>🛡️ Validazione Ente</h4>
+                        <p>{passportDetails.certifierNote || "In attesa di certificazione ufficiale"}</p>
                     </div>
-                )}
-            </div> 
-        </section> 
+                </div>
+            )}
+        </section>
     );
 }
 
