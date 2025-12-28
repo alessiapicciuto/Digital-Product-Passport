@@ -1,43 +1,54 @@
-// File: contracts/ProductPassport.sol
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28; 
 
 contract ProductPassport {
     struct Passport {
-        address producer; 
-        address factory;  
+        address brand;        // Il Brand che crea l'ID finale
+        address factory;      
         address certifier;
-        string originHash;
-        string factoryHash;
-        string certifierHash;
+        string brandDetails;  // Dichiarazioni del Brand (Nome, Certificazioni dichiarate)
+        string factoryHash;   // Dati della fabbrica (Indirizzo, Consumo)
+        string certifierNote; // Validazione ufficiale dell'Ente
         uint timestamp;
     }
 
     mapping(string => Passport) public passports;
 
-    function registerOrigin(string memory _productID, string memory _originHash) public {
-        require(passports[_productID].timestamp == 0, "Prodotto gia' registrato.");
-        passports[_productID] = Passport(
-            msg.sender, address(0), address(0), _originHash, "", "", block.timestamp
-        );
+    // 1. Il BRAND registra l'ID finale e le sue dichiarazioni
+    function registerBrandProduct(string memory _productID, string memory _details) public {
+        require(passports[_productID].timestamp == 0, "ID gia esistente. Usa un ID univoco.");
+        
+        passports[_productID] = Passport({
+            brand: msg.sender,
+            factory: address(0),
+            certifier: address(0),
+            brandDetails: _details,
+            factoryHash: "",
+            certifierNote: "",
+            timestamp: block.timestamp
+        });
     }
 
-    function updateFactory(string memory _productID, string memory _factoryHash) public {
-        require(passports[_productID].timestamp != 0, "Prodotto non registrato.");
-        require(passports[_productID].factory == address(0), "Fase produzione gia' registrata.");
+    // 2. La FABBRICA aggiunge i dati tecnici di produzione
+    function updateFactory(string memory _productID, string memory _factoryData) public {
+        require(passports[_productID].timestamp != 0, "Prodotto non registrato dal Brand.");
+        // Rimosso il vincolo "factory == address(0)" per permettere correzioni se necessario
+        
         passports[_productID].factory = msg.sender;
-        passports[_productID].factoryHash = _factoryHash;
+        passports[_productID].factoryHash = _factoryData;
     }
     
-    function certifyProduct(string memory _productID, string memory _certifierHash) public {
-        require(passports[_productID].factory != address(0), "Produzione non completata.");
-        require(passports[_productID].certifier == address(0), "Certificazione gia' applicata.");
+    // 3. L'ENTE CERTIFICATORE convalida ufficialmente le dichiarazioni
+    function certifyProduct(string memory _productID, string memory _note) public {
+        require(passports[_productID].timestamp != 0, "Prodotto non trovato.");
+        
         passports[_productID].certifier = msg.sender;
-        passports[_productID].certifierHash = _certifierHash;
+        passports[_productID].certifierNote = _note;
     }
 
+    // Funzione di lettura per il Consumatore
     function getPassport(string memory _productID) public view returns (Passport memory) {
-        require(passports[_productID].timestamp != 0, "Prodotto non trovato.");
+        require(passports[_productID].timestamp != 0, "Passaporto non trovato.");
         return passports[_productID];
     }
 }
