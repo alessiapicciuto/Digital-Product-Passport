@@ -6,15 +6,19 @@ function CertifierView() {
 
     return (
         <section className="panel certifier-view">
-            <h2>Ente Certificante: Convalida</h2>
+            <h2> Convalida da parte dell'Ente Certificante</h2>
             <form onSubmit={handleCertify}>
                 <div className="form-group">
-                    <label>ID Prodotto da certificare:</label>
-                    <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} required />
+                    <label>Inserire l'ID del Prodotto da Certificare:</label>
+                    <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} required 
+                    placeholder="es: MAGLIONE-IN-LANA-001 "
+                    />
                 </div>
                 <div className="form-group">
-                    <label>Nota di Certificazione:</label>
-                    <textarea value={note} onChange={(e) => setNote(e.target.value)} required />
+                    <label>Inserire Esito Convalida Delle Certificazione:</label>
+                    <textarea value={note} 
+                    onChange={(e) => setNote(e.target.value)} required
+                    placeholder="es: Cerificato della Sostenibiltà 2025 APPROVATO " />
                 </div>
                 <button type="submit" disabled={loading} className="brand-btn">
                     {loading ? 'Inviando...' : 'Convalida Certificazione'}
@@ -24,9 +28,9 @@ function CertifierView() {
             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             
             {txHash && (
-                <div style={{ marginTop: '15px', padding: '10px', border: '1px solid #ffc107', borderRadius: '5px', backgroundColor: '#fff3cd' }}>
-                    <p style={{ color: '#856404', margin: 0, fontWeight: 'bold' }}>✔ Certificazione Riuscita</p>
-                    <p style={{ fontSize: '0.7em', wordBreak: 'break-all' }}>Hash: {txHash}</p>
+                <div className="tx-success"> 
+                   <p><strong>Certificazione Riuscita</strong></p>
+                   <p style={{ fontSize: '0.7rem' }}>Transazione Blockchain: {txHash}</p>
                 </div>
             )}
         </section>

@@ -2,34 +2,96 @@ import React from 'react';
 import useFactory from './FactoryLogic';
 
 function FactoryView() {
-    const { productId, setProductId, factoryData, setFactoryData, loading, error, txHash, handleUpdate } = useFactory();
+    const { 
+        productId, setProductId, 
+        details, setDetails, 
+        water, setWater, 
+        energy, setEnergy, 
+        chemicals, setChemicals, 
+        origin, setOrigin, 
+        loading, error, txHash, handleUpdate 
+    } = useFactory();
 
     return (
-        <section className="panel factory-view">
-            <h2>Fabbrica: Gestione Produzione</h2>
+        <section className="panel">
+            <h2> Gestione Produzione degli Articoli Semilavorati </h2>
             <form onSubmit={handleUpdate}>
                 <div className="form-group">
-                    <label>ID Prodotto da aggiornare:</label>
-                    <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} required />
+                    <label> Inserire l'ID del Prodotto registrato dal produttore:</label>
+                    <input 
+                        type="text" 
+                        value={productId} 
+                        onChange={(e) => setProductId(e.target.value)} 
+                        placeholder="es: LOTTO-001 "
+                        required 
+                    />
                 </div>
+
                 <div className="form-group">
-                    <label>Dettagli Produzione:</label>
-                    <textarea value={factoryData} onChange={(e) => setFactoryData(e.target.value)} required />
+                    <label>Inserire il Luogo di Trasformazione della Materia Prima in Prodotto Semilavorato:</label>
+                    <input 
+                        type="text" 
+                        value={origin} 
+                        onChange={(e) => setOrigin(e.target.value)} 
+                        placeholder="es: Bari, Italia"
+                        required 
+                    />
                 </div>
+
+                <div className="form-group">
+                    <label>Inserire il Consumo Idrico per la Produzione:</label>
+                    <input 
+                        type="text" 
+                        value={water} 
+                        onChange={(e) => setWater(e.target.value)}
+                        placeholder="es: 500 litri per lotto" 
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Inserire il Consumo Elettrico per la Produzione :</label>
+                    <input 
+                        type="text" 
+                        value={energy} 
+                        onChange={(e) => setEnergy(e.target.value)} 
+                         placeholder="es: 500 kWh per lotto"
+
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Elencare le Sostanze Chimiche e/o Trattamenti:</label>
+                    <textarea 
+                        value={chemicals} 
+                        onChange={(e) => setChemicals(e.target.value)} 
+                        placeholder="Descrivere trattamenti o sostanze utilizzate"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Inserire eventuali Dettagli Tecnici:</label>
+                    <textarea 
+                        value={details} 
+                        onChange={(e) => setDetails(e.target.value)} 
+                        placeholder="es: Specifiche della lavorazione industriale"
+                    />
+                </div>
+
                 <button type="submit" disabled={loading} className="brand-btn">
-                    {loading ? 'Inviando...' : 'Aggiorna Dati Fabbrica'}
+                    {loading ? 'Aggiornamento in corso...' : 'Invia Dati Produzione'}
                 </button>
             </form>
 
-            {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-            
             {txHash && (
-                <div style={{ marginTop: '15px', padding: '10px', border: '1px solid #28a745', borderRadius: '5px', backgroundColor: '#d4edda' }}>
-                    <p style={{ color: '#155724', margin: 0, fontWeight: 'bold' }}>✔ Registrazione Fabbrica Riuscita</p>
-                    <p style={{ fontSize: '0.7em', wordBreak: 'break-all' }}>Hash: {txHash}</p>
+                <div className="tx-success">
+                    <p><strong>Dati salvati con successo</strong></p>
+                    <p style={{ fontSize: '0.8rem' }}>Transazione: {txHash}</p>
                 </div>
             )}
+            
+            {error && <p className="error-text">{error}</p>}
         </section>
     );
 }
+
 export default FactoryView;

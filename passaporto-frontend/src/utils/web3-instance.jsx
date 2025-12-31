@@ -1,8 +1,10 @@
 import Web3 from 'web3';
 import ProductPassportArtifact from '../contracts/ProductPassport.json';
 
-// ATTENZIONE: Questo indirizzo deve essere l'ultimo che esce dal terminale dopo il deploy!
-const CONTRACT_ADDRESS = '0xEffc8058cf02d7658DBf1515d8BA3E0829D62C11';
+// ATTENZIONE: Questo indirizzo deve essere modificato ogni voltra che si esgue il comando npx hardhat run scripts/deploy.cjs --network localhost 
+// e assieme a questo va cambiato anche il file che si trova in passaporto-frontend/contracts/ProdictPassaort 
+// con il codice presente in passaorto-blockchain/artifacts/contracts/ productpassaport dopo aver esguito il comando npx hardhat compile
+const CONTRACT_ADDRESS = '0x926B34A2e3380a81Df3a08875cDadE9635f2E29B';
 const NETWORK_URL = 'http://127.0.0.1:7545'; 
 
 let web3Instance = null;
@@ -35,7 +37,6 @@ export const initWeb3 = async () => {
     }
 };
 
-// ESPORTAZIONI ESPLICITE (Risolvono gli errori in console)
 export const getWeb3 = () => web3Instance;
 export const getContract = () => contractInstance;
 export const getAccounts = () => accountsList;

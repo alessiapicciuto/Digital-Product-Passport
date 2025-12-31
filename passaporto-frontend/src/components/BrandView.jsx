@@ -1,72 +1,96 @@
-// File: src/components/BrandView.jsx
 import React from 'react';
 import useBrand from './BrandLogic';
 
 function BrandView() {
     const { 
-        productId, setProductId,
-        brandData, handleChange, 
+        productId, setProductId, 
+        brandName, setBrandName, 
+        rawMaterialID, setRawMaterialID, 
+        materials, setMaterials, 
+        brandDetails, setBrandDetails, 
         loading, error, txHash, 
         handleBrandRegistration 
     } = useBrand();
 
     return (
-        <section className="panel brand-view">
-            <h2>Identità e Sostenibilità del Brand</h2>
-            <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '20px' }}>
-                In questa sezione il Brand definisce l'ID finale e dichiara le proprie certificazioni.
-            </p>
+        <section className="panel">
+           
+            <h2>Registrazione Marchio e Articolo</h2>
             
             <form onSubmit={handleBrandRegistration}>
+                
                 <div className="form-group">
-                    <label>ID Prodotto Finale (Etichetta):</label>
+                    <label>Inserire il Nome del Brand:</label>
                     <input 
                         type="text" 
-                        placeholder="Es: COLLEZIONE-2025-001"
-                        value={productId}
-                        onChange={(e) => setProductId(e.target.value)}
-                        required
+                        value={brandName} 
+                        onChange={(e) => setBrandName(e.target.value)} 
+                        placeholder="es: BRAND-001"
+                        required 
                     />
                 </div>
 
+            
                 <div className="form-group">
-                    <label>Nome del Brand:</label>
+                    <label>Inserire l'ID del prodotto che si intende registrare:</label>
                     <input 
                         type="text" 
-                        name="brandName"
-                        value={brandData.brandName}
-                        onChange={handleChange}
-                        placeholder="Es: Azienda Moda Italiana"
-                        required
+                        value={productId} 
+                        onChange={(e) => setProductId(e.target.value)} 
+                        placeholder="es: MAGLIONE-IN-LANA-001"
+                        required 
                     />
                 </div>
-                
+
+            
                 <div className="form-group">
-                    <label>Certificazioni Aziendali (Nomi):</label>
-                    <textarea 
-                        name="certifications"
-                        value={brandData.certifications}
-                        onChange={handleChange}
-                        placeholder="Es: GOTS, OEKO-TEX, Fair Trade..."
-                        rows="3"
-                        required
-                    ></textarea>
+                    <label>Inserire l'ID del Lotto della Materia Prima:</label>
+                    <input 
+                        type="text" 
+                        value={rawMaterialID} 
+                        onChange={(e) => setRawMaterialID(e.target.value)} 
+                        placeholder="es: LOTTO-001"
+                        required 
+                    />
                 </div>
+
+              
+                <div className="form-group">
+                    <label>Elenca la Composizione dei Materiali:</label>
+                    <input 
+                        type="text" 
+                        value={materials} 
+                        onChange={(e) => setMaterials(e.target.value)} 
+                        placeholder="es: 100% LANA"
+                        required 
+                    />
+                </div>
+
+               
+                <div className="form-group">
+                    <label>Dettagli Aggiuntivi Articolo:</label>
+                    <textarea 
+                        value={brandDetails} 
+                        onChange={(e) => setBrandDetails(e.target.value)} 
+                        placeholder="Specifiche tecniche o note del marchio"
+                        required 
+                    />
+                </div>
+
                 
-                <button type="submit" disabled={loading} className="brand-btn">
-                    {loading ? 'Registrazione in corso...' : 'Registra Identità Brand'}
+                <button type="submit" disabled={loading} className="btn-success">
+                    {loading ? 'Registrazione...' : 'Registra Brand'}
                 </button>
             </form>
 
-            {/* Feedback per l'utente */}
-            {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             
             {txHash && (
-                <div style={{ marginTop: '15px', padding: '10px', border: '1px solid #007bff', borderRadius: '5px', backgroundColor: '#e7f3ff' }}>
-                    <p style={{ color: '#007bff', margin: 0, fontWeight: 'bold' }}>✔ Identità Brand Registrata</p>
-                    <p style={{ fontSize: '0.7em', wordBreak: 'break-all' }}>Transazione: {txHash}</p>
+                <div className="mt-3 alert alert-success">
+                    Registrazione completata con successo! <br/>
+                    Hash: {txHash}
                 </div>
             )}
+            {error && <p className="error-message mt-2">{error}</p>}
         </section>
     );
 }

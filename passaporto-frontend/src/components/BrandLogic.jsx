@@ -3,34 +3,47 @@ import { getContract, getAccounts } from '../utils/web3-instance';
 
 const useBrand = () => {
     const [productId, setProductId] = useState('');
-    const [brandData, setBrandData] = useState({ brandName: '', certifications: '' });
+    const [brandName, setBrandName] = useState(''); 
+    const [rawMaterialID, setRawMaterialID] = useState('');
+    const [materials, setMaterials] = useState('');
+    const [brandDetails, setBrandDetails] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [txHash, setTxHash] = useState(null);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setBrandData(prev => ({ ...prev, [name]: value }));
-    };
-
     const handleBrandRegistration = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const contract = getContract();
-        const accounts = getAccounts();
-
+        setError(null);
         try {
-            const details = `Brand: ${brandData.brandName} - Cert: ${brandData.certifications}`;
-            const result = await contract.methods.registerBrandProduct(productId, details)
-                .send({ from: accounts[0], gas: 500000 });
+            const contract = getContract();
+            const accounts = getAccounts();
+            
+        
+            const result = await contract.methods.registerBrandProduct(
+                productId, 
+                brandName, 
+                brandDetails, 
+                materials, 
+                rawMaterialID
+            ).send({ from: accounts[0], gas: 600000 });
+            
             setTxHash(result.transactionHash);
-        } catch (err) {
-            setError("Errore: " + err.message);
+        } catch (err) { 
+            setError("Errore: " + err.message); 
         }
         setLoading(false);
     };
 
-    return { productId, setProductId, brandData, handleChange, loading, error, txHash, handleBrandRegistration };
+    return { 
+        productId, setProductId, 
+        brandName, setBrandName, 
+        rawMaterialID, setRawMaterialID, 
+        materials, setMaterials, 
+        brandDetails, setBrandDetails, 
+        loading, error, txHash, 
+        handleBrandRegistration 
+    };
 };
 
 export default useBrand;

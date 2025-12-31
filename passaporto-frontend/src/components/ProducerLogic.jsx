@@ -1,34 +1,52 @@
 import { useState } from 'react';
-import { getContract, getAccounts } from '../utils/web3-instance'; 
+import { getContract, getAccounts } from '../utils/web3-instance';
 
 const useProducer = () => {
     const [productId, setProductId] = useState('');
-    const [originDetails, setOriginDetails] = useState('');
+    const [originArea, setOriginArea] = useState('');
+    const [harvestMethod, setHarvestMethod] = useState('');
+    const [certifications, setCertifications] = useState('');
+    const [details, setDetails] = useState('');
+    
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [txHash, setTxHash] = useState(null);
 
-    const handleRegistration = async (e) => {
+    const handleRegisterRawMaterial = async (e) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
-        const contract = getContract();
-        const accounts = getAccounts(); 
+        setError(null);
+        setTxHash(null);
 
         try {
-            const result = await contract.methods.registerBrandProduct(
-                productId, 
-                originDetails
-            ).send({ from: accounts[0], gas: 500000 });
+            const contract = getContract();
+            const accounts = getAccounts();
+            
 
+            const result = await contract.methods.registerRawMaterial(
+                productId, 
+                originArea,
+                harvestMethod,
+                certifications,
+                details
+            ).send({ from: accounts[0], gas: 600000 });
+                
             setTxHash(result.transactionHash);
         } catch (err) {
-            setError(`Errore: ${err.message}`);
+            console.error(err);
+            setError("Errore nella registrazione: " + err.message);
         }
         setLoading(false);
     };
 
-    return { productId, setProductId, originDetails, setOriginDetails, loading, error, txHash, handleRegistration };
+    return { 
+        productId, setProductId, 
+        originArea, setOriginArea,
+        harvestMethod, setHarvestMethod,
+        certifications, setCertifications,
+        details, setDetails, 
+        loading, error, txHash, handleRegisterRawMaterial 
+    };
 };
 
 export default useProducer;
