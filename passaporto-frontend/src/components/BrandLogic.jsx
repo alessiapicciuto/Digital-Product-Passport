@@ -16,30 +16,18 @@ const useBrand = () => {
     const handleBrandRegistration = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-        setTxHash(null);
-
         const contract = getContract();
         const accounts = getAccounts();
 
         try {
-            const details = `Brand: ${brandData.brandName} - Certificazioni: ${brandData.certifications}`;
-            
-            // Usiamo registerOrigin perché è il nome nel tuo attuale file JSON
-            const result = await contract.methods.registerOrigin(
-                productId, 
-                details
-            ).send({ from: accounts[0], gas: 500000 });
-
+            const details = `Brand: ${brandData.brandName} - Cert: ${brandData.certifications}`;
+            const result = await contract.methods.registerBrandProduct(productId, details)
+                .send({ from: accounts[0], gas: 500000 });
             setTxHash(result.transactionHash);
         } catch (err) {
-            console.error(err);
-            setError(err.message.includes("Internal JSON-RPC") 
-                ? "Errore: ID già esistente o problema di connessione." 
-                : err.message);
-        } finally {
-            setLoading(false);
+            setError("Errore: " + err.message);
         }
+        setLoading(false);
     };
 
     return { productId, setProductId, brandData, handleChange, loading, error, txHash, handleBrandRegistration };

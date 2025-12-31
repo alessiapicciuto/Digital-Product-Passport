@@ -1,5 +1,3 @@
-// File: src/components/ProducerLogic.jsx
-
 import { useState } from 'react';
 import { getContract, getAccounts } from '../utils/web3-instance'; 
 
@@ -13,47 +11,24 @@ const useProducer = () => {
     const handleRegistration = async (e) => {
         e.preventDefault();
         setError(null);
-        setTxHash(null);
         setLoading(true);
-        
-
         const contract = getContract();
         const accounts = getAccounts(); 
 
-        if (!contract || accounts.length === 0) {
-            setError('Errore: Connessione alla blockchain non riuscita.');
-            setLoading(false);
-            return;
-        }
-
         try {
-
-            const result = await contract.methods.registerOrigin(
-             productId, 
-             originDetails
-             ).send({ from: accounts[0],
-             gas: 500000 });
+            const result = await contract.methods.registerBrandProduct(
+                productId, 
+                originDetails
+            ).send({ from: accounts[0], gas: 500000 });
 
             setTxHash(result.transactionHash);
-            setError(null); 
-            
         } catch (err) {
-            console.error("Errore durante la transazione:", err);
-            setError(`Errore di transazione: ${err.message || 'Verifica la console.'}`);
+            setError(`Errore: ${err.message}`);
         }
         setLoading(false);
     };
 
-    return {
-        productId,
-        setProductId,
-        originDetails,
-        setOriginDetails,
-        loading,
-        error,
-        txHash,
-        handleRegistration,
-    };
+    return { productId, setProductId, originDetails, setOriginDetails, loading, error, txHash, handleRegistration };
 };
 
 export default useProducer;
