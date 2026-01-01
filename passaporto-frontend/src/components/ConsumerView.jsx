@@ -22,9 +22,11 @@ function ConsumerView() {
                 <input 
                     type="text" className="input-field" 
                     value={productId} onChange={(e) => setProductId(e.target.value)} 
-                    placeholder="Inserisci ID Capo (es: IT-LANA-2025)" required 
+                    placeholder="Inserisci ID Prodotto (es: MAGLIA-01)" required 
                 />
-                <button type="submit" className="btn-search" disabled={loading}>Cerca</button>
+                <button type="submit" className="btn-search" disabled={loading}>
+                    {loading ? 'Cerca...' : 'Cerca'}
+                </button>
             </form>
 
             {error && <p className="error-message">{error}</p>}
@@ -40,14 +42,14 @@ function ConsumerView() {
                     </div>
 
                     <div className="passport-body">
-                        {/* 1. SEZIONE BRAND */}
+                        {/* SEZIONE BRAND */}
                         <section className="data-group">
                             <h4>Origine e Marchio</h4>
-                            <DataRow label="Marca" value={passportData.brandName} />
+                            <DataRow label="Dettagli" value={passportData.brandName} />
                             <DataRow label="Composizione" value={passportData.materialComposition} />
                         </section>
 
-                        {/* 2. SEZIONE MATERIA PRIMA (COLLEGATA) */}
+                        {/* SEZIONE MATERIA PRIMA */}
                         {passportData.rawInfo && (
                             <section className="data-group highlight-green">
                                 <h4>Dettagli Materia Prima (ID: {passportData.linkedRawMaterialID})</h4>
@@ -57,11 +59,10 @@ function ConsumerView() {
                             </section>
                         )}
 
-                        {/* 3. SEZIONE FABBRICA (COLLEGATA) */}
+                        {/* SEZIONE FABBRICA */}
                         {passportData.factoryInfo && (
                             <section className="data-group highlight-blue">
                                 <h4>Impatto di Produzione (ID: {passportData.linkedFactoryID})</h4>
-                                <DataRow label="Stabilimento" value={passportData.factoryInfo.name} />
                                 <DataRow label="Località" value={passportData.factoryInfo.location} />
                                 <DataRow label="Consumo Idrico" value={passportData.factoryInfo.water} />
                                 <DataRow label="Consumo Energetico" value={passportData.factoryInfo.energy} />

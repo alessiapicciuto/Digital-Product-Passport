@@ -10,15 +10,22 @@ function CertifierView() {
             <form onSubmit={handleCertify}>
                 <div className="form-group">
                     <label>Inserire l'ID del Prodotto da Certificare:</label>
-                    <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} required 
-                    placeholder="es: MAGLIONE-IN-LANA-001 "
+                    <input 
+                        type="text" 
+                        value={productId} 
+                        onChange={(e) => setProductId(e.target.value)} 
+                        required 
+                        placeholder="es: MAGLIONE-IN-LANA-001 "
                     />
                 </div>
                 <div className="form-group">
                     <label>Inserire Esito Convalida Delle Certificazione:</label>
-                    <textarea value={note} 
-                    onChange={(e) => setNote(e.target.value)} required
-                    placeholder="es: Cerificato della Sostenibiltà 2025 APPROVATO " />
+                    <textarea 
+                        value={note} 
+                        onChange={(e) => setNote(e.target.value)} 
+                        required
+                        placeholder="es: Cerificato della Sostenibiltà 2025 APPROVATO " 
+                    />
                 </div>
                 <button type="submit" disabled={loading} className="brand-btn">
                     {loading ? 'Inviando...' : 'Convalida Certificazione'}
@@ -36,4 +43,5 @@ function CertifierView() {
         </section>
     );
 }
+
 export default CertifierView;

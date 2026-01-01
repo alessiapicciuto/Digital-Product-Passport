@@ -2,51 +2,56 @@ import { useState } from 'react';
 import { getContract, getAccounts } from '../utils/web3-instance';
 
 const useFactory = () => {
+
     const [productId, setProductId] = useState('');
-    const [details, setDetails] = useState('');
-    const [water, setWater] = useState('');
-    const [energy, setEnergy] = useState('');
-    const [chemicals, setChemicals] = useState('');
-    const [origin, setOrigin] = useState('');
+    const [factoryData, setFactoryData] = useState(''); 
+    
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [txHash, setTxHash] = useState(null);
 
+    
     const handleUpdate = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
+        
         setLoading(true);
         setError(null);
         setTxHash(null);
 
         try {
             const contract = getContract();
-            const accounts = getAccounts();
+            const accounts = await getAccounts(); 
+
+            if (!contract) throw new Error("Contratto non inizializzato");
+            if (!accounts || accounts.length === 0) throw new Error("Connetti MetaMask");
+
             
-            const result = await contract.methods.updateFactory(
+            const result = await contract.methods.updateProductData(
                 productId, 
-                details, 
-                water, 
-                energy, 
-                chemicals, 
-                origin
-            ).send({ from: accounts[0], gas: 600000 });
+                factoryData
+            ).send({ 
+                from: accounts[0],
+                gas: 500000 
+            });
                 
             setTxHash(result.transactionHash);
+            
         } catch (err) {
-            console.error(err);
-            setError("Errore durante l'invio: " + err.message);
+            console.error("Errore durante l'aggiornamento:", err);
+            setError("Errore nell'aggiornamento blockchain: " + err.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return { 
-        productId, setProductId, 
-        details, setDetails, 
-        water, setWater, 
-        energy, setEnergy, 
-        chemicals, setChemicals, 
-        origin, setOrigin, 
-        loading, error, txHash, handleUpdate 
+        productId, 
+        setProductId, 
+        setFactoryData, 
+        loading, 
+        error, 
+        txHash, 
+        handleUpdate 
     };
 };
 

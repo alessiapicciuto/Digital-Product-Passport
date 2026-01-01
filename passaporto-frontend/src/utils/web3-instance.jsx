@@ -1,42 +1,29 @@
 import Web3 from 'web3';
 import ProductPassportArtifact from '../contracts/ProductPassport.json';
 
-// ATTENZIONE: Questo indirizzo deve essere modificato ogni voltra che si esgue il comando npx hardhat run scripts/deploy.cjs --network localhost 
-// e assieme a questo va cambiato anche il file che si trova in passaporto-frontend/contracts/ProdictPassaort 
-// con il codice presente in passaorto-blockchain/artifacts/contracts/ productpassaport dopo aver esguito il comando npx hardhat compile
-const CONTRACT_ADDRESS = '0x926B34A2e3380a81Df3a08875cDadE9635f2E29B';
+// INDIRIZZO CORRETTO: rimosso lo spazio iniziale
+const CONTRACT_ADDRESS = '0xd6C5BE9d54A82F45bADC6D54Da8bc0176BFB2238'; 
 const NETWORK_URL = 'http://127.0.0.1:7545'; 
 
 let web3Instance = null;
 let contractInstance = null;
-let accountsList = [];
 
 export const initWeb3 = async () => {
+    if (!window.ethereum) return false;
     try {
-        let provider;
-        if (window.ethereum) {
-            provider = window.ethereum;
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-        } else {
-            provider = new Web3.providers.HttpProvider(NETWORK_URL);
-        }
-        
-        web3Instance = new Web3(provider);
-        
-        if (web3Instance) {
-            const abi = ProductPassportArtifact.abi;
-            contractInstance = new web3Instance.eth.Contract(abi, CONTRACT_ADDRESS);
-            accountsList = await web3Instance.eth.getAccounts();
-            
-            console.log("Web3 e Contratto inizializzati con successo.");
-            return true;
-        }
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        web3Instance = new Web3(window.ethereum);
+        contractInstance = new web3Instance.eth.Contract(ProductPassportArtifact.abi, CONTRACT_ADDRESS.trim());
+        console.log("MetaMask connesso con successo all'indirizzo:", CONTRACT_ADDRESS);
+        return true;
     } catch (error) {
-        console.error("Errore durante l'inizializzazione di Web3:", error);
+        console.error("Errore connessione MetaMask:", error);
         return false;
     }
 };
 
-export const getWeb3 = () => web3Instance;
 export const getContract = () => contractInstance;
-export const getAccounts = () => accountsList;
+export const getAccounts = async () => {
+    if (!web3Instance) return [];
+    return await web3Instance.eth.getAccounts();
+};

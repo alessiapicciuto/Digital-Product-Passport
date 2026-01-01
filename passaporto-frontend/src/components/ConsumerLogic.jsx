@@ -7,53 +7,83 @@ const useConsumer = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const handleFetchPassport = async (event) => {
-        if (event) event.preventDefault();
+    // Funzione di utilità per estrarre i dati dalla stringa della Factory
+    const parseFactoryString = (str) => {
+        if (!str) return { location: '', water: '', energy: '' };
+        
+        const parts = str.split('|').map(p => p.trim());
+        const extract = (prefix) => {
+            const part = parts.find(p => p.startsWith(prefix));
+            return part ? part.split(':')[1]?.trim() : "Dato non disponibile";
+        };
+
+        return {
+            location: extract("Località"),
+            water: extract("Acqua"),
+            energy: extract("Energia")
+        };
+    };
+
+    const handleFetchPassport = async (e) => {
+        if (e) e.preventDefault();
+        
         setLoading(true);
         setError(null);
         setPassportData(null);
 
         try {
             const contract = getContract();
-            const mainData = await contract.methods.getPassport(productId).call();
-            
-            let rawInfo = null;
-            let factoryInfo = null;
+            if (!contract) throw new Error("Contratto non inizializzato");
 
-            // Recupero automatico Materia Prima collegata
-            if (mainData.linkedRawMaterialID && mainData.linkedRawMaterialID.trim() !== "") {
-                try {
-                    const rData = await contract.methods.getPassport(mainData.linkedRawMaterialID).call();
-                    rawInfo = { area: rData.originLocation, method: rData.waterConsumption, certs: rData.energyConsumption };
-                } catch (e) { console.warn("Materia prima non trovata:", e.message); }
-            }
+            // Chiamata allo smart contract
+            const data = await contract.methods.getProductPassport(productId).call();
 
-            // Recupero automatico Fabbrica collegata
-            if (mainData.linkedFactoryID && mainData.linkedFactoryID.trim() !== "") {
-                try {
-                    const fData = await contract.methods.getPassport(mainData.linkedFactoryID).call();
-                    factoryInfo = { name: fData.brandName, loc: fData.originLocation, water: fData.waterConsumption, energy: fData.energyConsumption };
-                } catch (e) { console.warn("Fabbrica non trovata:", e.message); }
-            }
+            // Elaboriamo i dati della fabbrica (che nel contratto sono in factoryLocation)
+            const parsedFactory = parseFactoryString(data.factoryLocation);
 
-            setPassportData({
-                brand: mainData.brandName,
-                details: mainData.brandDetails,
-                composition: mainData.materialComposition,
-                raw: rawInfo,
-                factory: factoryInfo,
-                audit: mainData.certifierNote,
-                timestamp: new Date(Number(mainData.timestamp) * 1000).toLocaleString()
-            });
+            // Mappatura finale per la ConsumerView
+            const formattedData = {
+                brandName: data.brandName,
+                materialComposition: data.composition,
+                linkedRawMaterialID: data.rawId,
+                linkedFactoryID: data.factoryId,
+                
+                // Dati della materia prima (mappati da ProducerLogic)
+                rawInfo: {
+                    area: data.rawArea,
+                    method: data.rawMethod,
+                    certs: data.rawCerts
+                },
+                
+                // Dati della fabbrica (estratti dalla stringa aggregata)
+                factoryInfo: {
+                    location: parsedFactory.location,
+                    water: parsedFactory.water,
+                    energy: parsedFactory.energy
+                },
+                
+                certifierNote: data.certificationNote,
+                timestamp: new Date().toLocaleDateString()
+            };
+
+            setPassportData(formattedData);
 
         } catch (err) {
-            console.error("Errore recupero dati:", err.message); // Risolve avviso ESLint
-            setError("ID Prodotto non trovato nei registri blockchain.");
+            console.error("Errore nel recupero passaporto:", err);
+            setError("ID Prodotto non trovato o errore nella comunicazione con la Blockchain.");
         } finally {
             setLoading(false);
         }
     };
 
-    return { productId, setProductId, passportData, loading, error, handleFetchPassport };
+    return { 
+        productId, 
+        setProductId, 
+        passportData, 
+        loading, 
+        error, 
+        handleFetchPassport 
+    };
 };
+
 export default useConsumer;
