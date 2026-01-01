@@ -12,7 +12,7 @@ contract ProductPassport {
     }
 
     struct FactoryData {
-        string aggregatedInfo; // Contiene la stringa "Località: ... | Acqua: ..."
+        string aggregatedInfo; 
         bool exists;
     }
 
@@ -26,12 +26,11 @@ contract ProductPassport {
         bool exists;
     }
 
-    // Mapping per memorizzare i dati con i loro ID
     mapping(string => RawMaterial) private rawMaterials;
     mapping(string => FactoryData) private factoryUpdates;
     mapping(string => FinalProduct) private products;
 
-    // --- LOGICA PRODUCER ---
+    //  LOGICA PRODUCER 
     function registerRawMaterial(
         string memory _id,
         string memory _area,
@@ -42,14 +41,12 @@ contract ProductPassport {
         rawMaterials[_id] = RawMaterial(_area, _method, _certs, _details, true);
     }
 
-    // --- LOGICA FACTORY ---
-    // Utilizza l'ID definito dal produttore per aggiungere dati di trasformazione
+    // LOGICA FACTORY
     function updateProductData(string memory _id, string memory _data) public {
         factoryUpdates[_id] = FactoryData(_data, true);
     }
 
-    // --- LOGICA BRAND ---
-    // Registra il prodotto finale collegandolo all'ID della materia prima
+    // LOGICA BRAND 
     function registerBrandProduct(
         string memory _brandName,
         string memory _productId,
@@ -68,15 +65,14 @@ contract ProductPassport {
         });
     }
 
-    // --- LOGICA CERTIFIER ---
+    //  LOGICA CERTIFIER 
     function certifyProduct(string memory _productId, string memory _note) public {
         require(products[_productId].exists, "Prodotto non esistente");
         products[_productId].certificationNote = _note;
         products[_productId].isCertified = true;
     }
 
-    // --- LOGICA CONSUMER (VIEW) ---
-    // Restituisce tutti i dati aggregati per il passaporto digitale
+    //  LOGICA CONSUMER 
     function getProductPassport(string memory _productId) public view returns (
         string memory brandName,
         string memory composition,
@@ -100,11 +96,11 @@ contract ProductPassport {
             p.brandName,
             p.materials,
             p.rawMaterialID,
-            p.rawMaterialID, // In questo schema l'ID factory coincide con quello raw
+            p.rawMaterialID, 
             r.area,
             r.method,
             r.certifications,
-            f.aggregatedInfo, // La factory logic passerà la stringa intera
+            f.aggregatedInfo, 
             "", // I campi singoli sono estratti dalla stringa nella logica JS se necessario
             "",
             p.certificationNote
