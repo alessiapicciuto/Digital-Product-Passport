@@ -1,66 +1,113 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.28;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 contract ProductPassport {
-    struct Passport {
-        address creator;
-        string brandName;           
+    
+    struct RawMaterial {
+        string area;
+        string method;
+        string certifications;
+        string details;
+        bool exists;
+    }
+
+    struct FactoryData {
+        string aggregatedInfo; // Contiene la stringa "Località: ... | Acqua: ..."
+        bool exists;
+    }
+
+    struct FinalProduct {
+        string brandName;
+        string rawMaterialID;
+        string materials;
         string brandDetails;
-        string materialComposition;
-        string waterConsumption;    
-        string energyConsumption;   
-        string chemicalUsage;       
-        string originLocation;      
-        string certifierNote;
-        string linkedRawMaterialID;
-        string linkedFactoryID; 
-        uint timestamp;
-        address certifier; // <--- AGGIUNGI QUESTO CAMPO (Risolve image_c85688)
+        string certificationNote;
+        bool isCertified;
+        bool exists;
     }
 
-    mapping(string => Passport) public passports;
+    // Mapping per memorizzare i dati con i loro ID
+    mapping(string => RawMaterial) private rawMaterials;
+    mapping(string => FactoryData) private factoryUpdates;
+    mapping(string => FinalProduct) private products;
 
-    function registerBrandProduct(string memory _productID, string memory _brandName, string memory _details, string memory _materials, string memory _rawID, string memory _factoryID) public {
-        require(passports[_productID].timestamp == 0, "ID gia registrato");
-        Passport storage p = passports[_productID];
-        p.creator = msg.sender;
-        p.brandName = _brandName;    
-        p.brandDetails = _details;
-        p.materialComposition = _materials;
-        p.linkedRawMaterialID = _rawID;
-        p.linkedFactoryID = _factoryID;
-        p.timestamp = block.timestamp;
+    // --- LOGICA PRODUCER ---
+    function registerRawMaterial(
+        string memory _id,
+        string memory _area,
+        string memory _method,
+        string memory _certs,
+        string memory _details
+    ) public {
+        rawMaterials[_id] = RawMaterial(_area, _method, _certs, _details, true);
     }
 
-    function registerFactoryProfile(string memory _factoryID, string memory _name, string memory _location, string memory _water, string memory _energy, string memory _chemicals) public {
-        require(passports[_factoryID].timestamp == 0, "ID Fabbrica esistente");
-        Passport storage p = passports[_factoryID];
-        p.brandName = _name;
-        p.originLocation = _location;
-        p.waterConsumption = _water;
-        p.energyConsumption = _energy;
-        p.chemicalUsage = _chemicals;
-        p.timestamp = block.timestamp;
+    // --- LOGICA FACTORY ---
+    // Utilizza l'ID definito dal produttore per aggiungere dati di trasformazione
+    function updateProductData(string memory _id, string memory _data) public {
+        factoryUpdates[_id] = FactoryData(_data, true);
     }
 
-    function registerRawMaterial(string memory _productID, string memory _originArea, string memory _harvestMethod, string memory _rawCertifications, string memory _details) public {
-        require(passports[_productID].timestamp == 0, "ID Materia Prima esistente");
-        Passport storage p = passports[_productID];
-        p.originLocation = _originArea; 
-        p.waterConsumption = _harvestMethod; 
-        p.energyConsumption = _rawCertifications;
-        p.brandDetails = _details;
-        p.timestamp = block.timestamp;
+    // --- LOGICA BRAND ---
+    // Registra il prodotto finale collegandolo all'ID della materia prima
+    function registerBrandProduct(
+        string memory _brandName,
+        string memory _productId,
+        string memory _rawId,
+        string memory _materials,
+        string memory _details
+    ) public {
+        products[_productId] = FinalProduct({
+            brandName: _brandName,
+            rawMaterialID: _rawId,
+            materials: _materials,
+            brandDetails: _details,
+            certificationNote: "",
+            isCertified: false,
+            exists: true
+        });
     }
 
-    function certifyProduct(string memory _productID, string memory _note) public {
-        require(passports[_productID].timestamp != 0, "ID inesistente");
-        passports[_productID].certifier = msg.sender; // Ora questo campo esiste
-        passports[_productID].certifierNote = _note;
+    // --- LOGICA CERTIFIER ---
+    function certifyProduct(string memory _productId, string memory _note) public {
+        require(products[_productId].exists, "Prodotto non esistente");
+        products[_productId].certificationNote = _note;
+        products[_productId].isCertified = true;
     }
 
-    function getPassport(string memory _productID) public view returns (Passport memory) {
-        require(passports[_productID].timestamp != 0, "Non trovato");
-        return passports[_productID];
+    // --- LOGICA CONSUMER (VIEW) ---
+    // Restituisce tutti i dati aggregati per il passaporto digitale
+    function getProductPassport(string memory _productId) public view returns (
+        string memory brandName,
+        string memory composition,
+        string memory rawId,
+        string memory factoryId,
+        string memory rawArea,
+        string memory rawMethod,
+        string memory rawCerts,
+        string memory factoryLocation,
+        string memory factoryWater,
+        string memory factoryEnergy,
+        string memory certificationNote
+    ) {
+        FinalProduct memory p = products[_productId];
+        require(p.exists, "Prodotto non trovato");
+
+        RawMaterial memory r = rawMaterials[p.rawMaterialID];
+        FactoryData memory f = factoryUpdates[p.rawMaterialID];
+
+        return (
+            p.brandName,
+            p.materials,
+            p.rawMaterialID,
+            p.rawMaterialID, // In questo schema l'ID factory coincide con quello raw
+            r.area,
+            r.method,
+            r.certifications,
+            f.aggregatedInfo, // La factory logic passerà la stringa intera
+            "", // I campi singoli sono estratti dalla stringa nella logica JS se necessario
+            "",
+            p.certificationNote
+        );
     }
 }

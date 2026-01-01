@@ -1,3 +1,4 @@
+// hardhat.config.cjs
 require("@nomicfoundation/hardhat-toolbox");
 
 module.exports = {
@@ -11,13 +12,11 @@ module.exports = {
       viaIR: true, 
     },
   },
+
   networks: {
     ganache: {
       url: "http://127.0.0.1:7545",
-      chainId: 1337,
-      accounts: {
-        mnemonic: "bar rail front extra address quarter vapor extra boss arrive glove laptop",
-      }
+      chainId: 1337 
     }
   }
-};
+}; 
