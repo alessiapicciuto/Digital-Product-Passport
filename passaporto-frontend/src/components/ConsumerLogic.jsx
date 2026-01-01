@@ -7,7 +7,6 @@ const useConsumer = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Funzione di utilità per estrarre i dati dalla stringa della Factory
     const parseFactoryString = (str) => {
         if (!str) return { location: '', water: '', energy: '' };
         
@@ -35,27 +34,25 @@ const useConsumer = () => {
             const contract = getContract();
             if (!contract) throw new Error("Contratto non inizializzato");
 
-            // Chiamata allo smart contract
             const data = await contract.methods.getProductPassport(productId).call();
 
-            // Elaboriamo i dati della fabbrica (che nel contratto sono in factoryLocation)
             const parsedFactory = parseFactoryString(data.factoryLocation);
 
-            // Mappatura finale per la ConsumerView
+            // Mappatura per la ConsumerView
             const formattedData = {
                 brandName: data.brandName,
                 materialComposition: data.composition,
                 linkedRawMaterialID: data.rawId,
                 linkedFactoryID: data.factoryId,
                 
-                // Dati della materia prima (mappati da ProducerLogic)
+                // Dati della materia prima 
                 rawInfo: {
                     area: data.rawArea,
                     method: data.rawMethod,
                     certs: data.rawCerts
                 },
                 
-                // Dati della fabbrica (estratti dalla stringa aggregata)
+                // Dati della fabbrica 
                 factoryInfo: {
                     location: parsedFactory.location,
                     water: parsedFactory.water,

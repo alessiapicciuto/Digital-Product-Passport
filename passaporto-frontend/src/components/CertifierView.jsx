@@ -19,7 +19,7 @@ function CertifierView() {
                     />
                 </div>
                 <div className="form-group">
-                    <label>Inserire Esito Convalida Delle Certificazione:</label>
+                    <label>Inserire Esito della Valutazione Delle Certificazione:</label>
                     <textarea 
                         value={note} 
                         onChange={(e) => setNote(e.target.value)} 

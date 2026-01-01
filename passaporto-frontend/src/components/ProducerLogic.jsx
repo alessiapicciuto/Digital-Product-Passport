@@ -20,13 +20,12 @@ const useProducer = () => {
 
         try {
             const contract = getContract();
-            // CORREZIONE: Aggiunto await per recuperare gli account correttamente
             const accounts = await getAccounts(); 
             
             if (!contract) throw new Error("Contratto non inizializzato");
             if (!accounts || accounts.length === 0) throw new Error("Connetti MetaMask");
 
-            // Invio dei 5 parametri richiesti dal tuo contratto Solidity
+            
             const result = await contract.methods.registerRawMaterial(
                 productId, 
                 originArea,
@@ -37,7 +36,6 @@ const useProducer = () => {
                 
             setTxHash(result.transactionHash);
             
-            // Opzionale: pulizia campi dopo successo
             setProductId('');
             setOriginArea('');
         } catch (err) {

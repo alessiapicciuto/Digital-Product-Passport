@@ -15,14 +15,14 @@ function ConsumerView() {
     return (
         <section className="consumer-view-container">
             <header className="header-minimal">
-                <h2>Tracciabilità Asset Digitale</h2>
+                <h2>Tracciabilità Digitale</h2>
             </header>
 
             <form onSubmit={handleFetchPassport} className="search-interface">
                 <input 
                     type="text" className="input-field" 
                     value={productId} onChange={(e) => setProductId(e.target.value)} 
-                    placeholder="Inserisci ID Prodotto (es: MAGLIA-01)" required 
+                    placeholder="Inserisci ID Prodotto (es: MAGLIONE-IN-LANA-001)" required 
                 />
                 <button type="submit" className="btn-search" disabled={loading}>
                     {loading ? 'Cerca...' : 'Cerca'}
@@ -70,9 +70,9 @@ function ConsumerView() {
                         )}
 
                         <section className="data-group">
-                            <h4>Certificazione e Audit</h4>
+                            <h4>Stato della Verifica delle Certificazione</h4>
                             <div className="certification-box">
-                                <strong>Esito:</strong> {passportData.certifierNote || "Audit in corso"}
+                                <strong>Esito:</strong> {passportData.certifierNote || "Verifica in corso"}
                             </div>
                         </section>
                     </div>

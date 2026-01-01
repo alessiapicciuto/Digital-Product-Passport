@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import useFactory from './FactoryLogic';
 
 function FactoryView() {
-    // Etichette e stati locali per mantenere invariata l'interfaccia
     const [origin, setOrigin] = useState('');
     const [water, setWater] = useState('');
     const [energy, setEnergy] = useState('');
@@ -17,7 +16,6 @@ function FactoryView() {
 
     const preHandleUpdate = (e) => {
         e.preventDefault();
-        // Aggreghiamo i dati in un'unica stringa per la logica a 2 parametri
         const aggregatedData = `Località: ${origin} | Acqua: ${water} | Energia: ${energy} | Chimica: ${chemicals} | Note: ${details}`;
         setFactoryData(aggregatedData);
         handleUpdate(e);
@@ -39,12 +37,12 @@ function FactoryView() {
 
                 <div className="form-group">
                     <label>Inserire il Consumo Idrico per la Produzione:</label>
-                    <input type="text" value={water} onChange={(e) => setWater(e.target.value)} placeholder="es: 500 litri" />
+                    <input type="text" value={water} onChange={(e) => setWater(e.target.value)} placeholder="es: 500 litri per Lotto" />
                 </div>
 
                 <div className="form-group">
                     <label>Inserire il Consumo Elettrico per la Produzione :</label>
-                    <input type="text" value={energy} onChange={(e) => setEnergy(e.target.value)} placeholder="es: 500 kWh" />
+                    <input type="text" value={energy} onChange={(e) => setEnergy(e.target.value)} placeholder="es: 500 kWh per Lotto" />
                 </div>
 
                 <div className="form-group">

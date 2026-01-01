@@ -24,7 +24,7 @@ function BrandView() {
                         value={brandName} 
                         onChange={(e) => setBrandName(e.target.value)} 
                         required 
-                        placeholder="es: Gucci, Prada, EcoLabel"
+                        placeholder="es: BRAND-001"
                     />
                 </div>
 
@@ -51,7 +51,7 @@ function BrandView() {
                 </div>
 
                 <div className="form-group">
-                    <label>Elencare la Composizione dei Materiali:</label>
+                    <label>Elencare la Composizione dei Materiali del Capo:</label>
                     <input 
                         type="text" 
                         value={materials} 
